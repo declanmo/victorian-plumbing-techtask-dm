@@ -11,6 +11,24 @@ export const SortOption = {
 export type SortOption = typeof SortOption[keyof typeof SortOption];
 
 /**
+ * Facet filter value types
+ */
+export interface PriceRangeFacetValue {
+  identifier: string;
+  value: {
+    gte: number;
+    lte: number;
+  };
+}
+
+export interface StringFacetValue {
+  identifier: string;
+  value: string;
+}
+
+export type FacetFilterValue = PriceRangeFacetValue | StringFacetValue;
+
+/**
  * Request payload sent to the listings API
  */
 export interface ListingsRequest {
@@ -19,7 +37,7 @@ export interface ListingsRequest {
   size: number;
   additionalPages?: number;
   sort: SortOption;
-  facets?: Record<string, unknown>;
+  facets?: Record<string, FacetFilterValue[]>;
 }
   
   /**
@@ -42,25 +60,30 @@ export interface ListingsRequest {
 }
 
 export interface ApiFacetValue {
-    identifier: string;
-    value: unknown;
-    productCount: number;
-  }
-  
-  /**
-   * Facet group structure
-   */
-  export interface ApiFacetGroup {
-    name: string;
-    values: ApiFacetValue[];
-  }
-  
-  /**
-   * API response shape
-   */
-  export interface ListingsResponse {
-    products: ApiProduct[];
-    totalResults: number;
-    facets?: Record<string, ApiFacetGroup>;
-  }
+  identifier: string;
+  value: unknown;
+  displayValue: string;
+  productCount: number;
+  priority: number;
+}
+
+/**
+ * Facet group structure from API
+ */
+export interface ApiFacetGroup {
+  identifier: string;
+  displayName: string;
+  priority: number;
+  options: ApiFacetValue[];
+  facetType: number;
+}
+
+/**
+ * API response shape
+ */
+export interface ListingsResponse {
+  products: ApiProduct[];
+  totalResults: number;
+  facets?: ApiFacetGroup[];
+}
   
