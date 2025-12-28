@@ -97,7 +97,7 @@ Although this is a client-rendered example, several performance best practices w
 
 ## Testing Strategy (Not Implemented)
 
-Unit and E2E tests were generally omitted, as they were **not required** for this exercise. However some vitest unit tests were written to demonstrate competency for principal components 
+Unit and E2E tests were generally omitted, as they were **not required** for this exercise.
 
 The architecture is designed to be testable:
 
@@ -128,8 +128,9 @@ With more time, I would add:
 
 Given more time, I would:
 
+- Made filters collapsible to reduce page size
 - Add Storybook for design system components
-- Introduce E2E test coverage
+- Introduce Unit and E2E test coverage
 - Persist filters and sort state via URL
 - Explore SSR or edge caching
 
