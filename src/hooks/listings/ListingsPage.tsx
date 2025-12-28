@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useListings } from './useListings';
-// import { SortOption } from '../../api/listings.types';
 import SortSelect from '../../components/SortSelect/SortSelect';
 import ProductCard from '../../components/ProductCard/ProductCard';
+import FilterSidebar from '../../components/FilterSidebar/FilterSidebar';
 
 interface ListingsPageProps {
   query: string;
@@ -18,6 +18,9 @@ const ListingsPage: React.FC<ListingsPageProps> = ({ query }) => {
     isLoading,
     error,
     refetch,
+    availableFacets,
+    selectedFacets,
+    setFacets,
   } = useListings({ query });
 
   useEffect(() => {
@@ -25,40 +28,49 @@ const ListingsPage: React.FC<ListingsPageProps> = ({ query }) => {
   }, [refetch]);
 
   return (
-    <section className="p-4">
-      <div className="mb-4 flex justify-end">
-        <SortSelect value={sort} onChange={setSort} />
-      </div>
+    <div className="flex gap-6 p-4">
+      <FilterSidebar
+        availableFacets={availableFacets}
+        selectedFacets={selectedFacets}
+        onFacetChange={setFacets}
+      />
 
-      {/* Error Handling */}
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-        {isLoading &&
-          Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-64 bg-gray-200 animate-pulse rounded-lg"
-            />
-          ))}
-      </div>
-
-      {/* Load More */}
-      {hasMore && (
-        <div className="mt-6 text-center">
-          <button
-            onClick={loadMore}
-            disabled={isLoading}
-            className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
-          >
-            {isLoading ? 'Loading...' : 'Load More'}
-          </button>
+      {/* Main Content */}
+      <section className="flex-1">
+        <div className="mb-4 flex justify-end">
+          <SortSelect value={sort} onChange={setSort} />
         </div>
-      )}
-    </section>
+
+        {/* Error Handling */}
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+          {isLoading &&
+            Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-64 bg-gray-200 animate-pulse rounded-lg"
+              />
+            ))}
+        </div>
+
+        {/* Load More */}
+        {hasMore && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={loadMore}
+              disabled={isLoading}
+              className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+            >
+              {isLoading ? 'Loading...' : 'Load More'}
+            </button>
+          </div>
+        )}
+      </section>
+    </div>
   );
 };
 
