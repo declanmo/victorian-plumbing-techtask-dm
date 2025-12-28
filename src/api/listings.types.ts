@@ -75,6 +75,7 @@ export interface ApiFacetValue {
  */
 export interface ApiFacetGroup {
   identifier: string;
+  displayName: string;
   options: ApiFacetValue[];
   facetType: number;
 }
