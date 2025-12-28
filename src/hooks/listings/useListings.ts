@@ -26,7 +26,9 @@ export const useListings = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedFacets, setSelectedFacets] = useState<Record<string, FacetFilterValue[]>>({});
+  const selectedFacetsRef = useRef<Record<string, FacetFilterValue[]>>({});
   const [availableFacets, setAvailableFacets] = useState<ApiFacetGroup[]>([]);
+  const allFacetsRef = useRef<Record<string, ApiFacetGroup>>({});
 
   const loadListings = useCallback(
     async (reset = false) => {
@@ -38,7 +40,7 @@ export const useListings = ({
         pageNumber: reset ? 1 : pageNumberRef.current,
         size: pageSize,
         sort,
-        facets: Object.keys(selectedFacets).length > 0 ? selectedFacets : undefined,
+        facets: Object.keys(selectedFacetsRef.current).length > 0 ? selectedFacetsRef.current : undefined,
       };
 
       try {
@@ -51,7 +53,38 @@ export const useListings = ({
         pageNumberRef.current = reset ? 2 : pageNumberRef.current + 1;
         
         if (response.facets) {
-          setAvailableFacets(response.facets);
+          response.facets.forEach((facet) => {
+            if (!allFacetsRef.current[facet.identifier]) {
+              // First time seeing this facet - just store it
+              allFacetsRef.current[facet.identifier] = facet;
+            } else {
+              const apiOptionsMap = new Map(
+                facet.options.map(o => [o.identifier, o])
+              );
+              
+              const mergedOptions = allFacetsRef.current[facet.identifier].options.map(existingOption => {
+                const apiOption = apiOptionsMap.get(existingOption.identifier);
+                if (apiOption) {
+                  return apiOption;
+                } else {
+                  return { ...existingOption, productCount: 0 };
+                }
+              });
+              
+              // Add any new options from API that we haven't seen before
+              facet.options.forEach(apiOption => {
+                if (!allFacetsRef.current[facet.identifier].options.some(o => o.identifier === apiOption.identifier)) {
+                  mergedOptions.push(apiOption);
+                }
+              });
+              
+              allFacetsRef.current[facet.identifier] = {
+                ...facet,
+                options: mergedOptions
+              };
+            }
+          });
+          setAvailableFacets(Object.values(allFacetsRef.current));
         }
       } catch {
         setError('Something went wrong while loading products.');
@@ -59,7 +92,7 @@ export const useListings = ({
         setIsLoading(false);
       }
     },
-    [query, pageSize, sort, selectedFacets]
+    [query, pageSize, sort]
   );
 
   const handleSortChange = (newSort: SortOption) => {
@@ -69,19 +102,17 @@ export const useListings = ({
   };
 
   const handleFacetChange = (facetKey: string, facetValues: FacetFilterValue[]) => {
-    setSelectedFacets((prev) => {
-      const updated = { ...prev };
-      if (facetValues.length === 0) {
-        delete updated[facetKey];
-      } else {
-        updated[facetKey] = facetValues;
-      }
-      return updated;
-    });
+    const updated = { ...selectedFacets };
+    if (facetValues.length === 0) {
+      delete updated[facetKey];
+    } else {
+      updated[facetKey] = facetValues;
+    }
+    
+    selectedFacetsRef.current = updated;
+    setSelectedFacets(updated);
     pageNumberRef.current = 1;
-    setTimeout(() => {
-      loadListings(true);
-    }, 0);
+    loadListings(true);
   };
 
   const loadMore = () => {

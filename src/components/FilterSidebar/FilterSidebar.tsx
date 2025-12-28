@@ -13,26 +13,22 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   onFacetChange,
 }) => {
 
-  const handleCheckboxChange = (
+  const handlePillClick = (
     facetKey: string,
     identifier: string,
-    value: string | { gte: number; lte: number },
-    isChecked: boolean
+    value: string | { gte: number; lte: number }
   ) => {
     const currentSelection = selectedFacets[facetKey] || [];
+    const isSelected = currentSelection.some((item) => item.identifier === identifier);
     
-    if (isChecked) {
-      // Add to selection
+    if (isSelected) {
+      const filtered = currentSelection.filter((item) => item.identifier !== identifier);
+      onFacetChange(facetKey, filtered);
+    } else {
       const newValue: FacetFilterValue = typeof value === 'string'
         ? { identifier, value }
         : { identifier, value };
       onFacetChange(facetKey, [...currentSelection, newValue]);
-    } else {
-      // Remove from selection
-      const filtered = currentSelection.filter(
-        (item) => item.identifier !== identifier
-      );
-      onFacetChange(facetKey, filtered);
     }
   };
 
@@ -41,51 +37,59 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     return currentSelection.some((item) => item.identifier === identifier);
   };
 
+  const formatDisplayValue = (value: string, facetType: string): string => {
+    if (facetType === 'prices' && value.includes(' - ')) {
+      const parts = value.split(' - ');
+      return `£${parts[0]} - £${parts[1]}`;
+    }
+    if (facetType === 'prices' && value.endsWith(' - ')) {
+      return value.replace(' - ', '+').replace(/^/, '£');
+    }
+    return value;
+  };
+
   return (
-    <aside className="w-64 bg-white p-4 rounded-lg shadow">
+    <aside className="w-64 bg-white p-4 rounded-lg shadow max-h-screen overflow-y-auto">
       <h2 className="text-xl font-bold mb-4">Filter By</h2>
 
-      {availableFacets?.map((facetGroup) => {
+      {availableFacets.map((facetGroup) => {
         if (!facetGroup.options || facetGroup.options.length === 0) {
           return null;
         }
 
         return (
           <div key={facetGroup.identifier} className="mb-6">
-            <h3 className="font-semibold mb-2 text-gray-700">
+            <h3 className="font-semibold mb-3 text-gray-700">
               {facetGroup.displayName}
             </h3>
             
-            <div className="space-y-2">
+            <div className="flex flex-wrap gap-2">
               {facetGroup.options.map((option) => {
-                const checked = isSelected(facetGroup.identifier, option.identifier);
+                const selected = isSelected(facetGroup.identifier, option.identifier);
                 const value = option.value as string | { gte: number; lte: number };
+                const displayValue = formatDisplayValue(option.displayValue, facetGroup.identifier);
+                const isDisabled = option.productCount === 0 && !selected;
                 
                 return (
-                  <label
+                  <button
                     key={option.identifier}
-                    className="flex items-start space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                    onClick={() => handlePillClick(facetGroup.identifier, option.identifier, value)}
+                    disabled={isDisabled}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                      selected
+                        ? 'bg-blue-600 text-white hover:bg-blue-700'
+                        : isDisabled
+                        ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
                   >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={(e) =>
-                        handleCheckboxChange(
-                          facetGroup.identifier,
-                          option.identifier,
-                          value,
-                          e.target.checked
-                        )
-                      }
-                      className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-sm flex-1">
-                      {option.displayValue}
-                      <span className="text-gray-400 ml-1">
-                        ({option.productCount})
-                      </span>
+                    {displayValue}
+                    <span className={`ml-1 text-xs ${
+                      selected ? 'text-blue-200' : isDisabled ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
+                      ({option.productCount})
                     </span>
-                  </label>
+                  </button>
                 );
               })}
             </div>
@@ -93,7 +97,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         );
       })}
 
-      {(!availableFacets || availableFacets.length === 0) && (
+      {availableFacets.length === 0 && (
         <p className="text-gray-500 text-sm">No filters available</p>
       )}
     </aside>
