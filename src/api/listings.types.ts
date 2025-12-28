@@ -82,7 +82,12 @@ export interface ApiFacetGroup {
  */
 export interface ListingsResponse {
   products: ApiProduct[];
-  totalResults: number;
+  pagination: {
+    from: number;
+    size: number;
+    total: number;
+    sortType: number;
+  };
   facets?: ApiFacetGroup[];
 }
   

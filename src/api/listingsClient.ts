@@ -66,7 +66,7 @@ const mapApiProductToProduct = (product: ApiProduct): Product => {
   
     return {
       products: data.products.map(mapApiProductToProduct),
-      totalResults: data.totalResults,
+      totalResults: data.pagination.total,
       facets: data.facets,
     };
   };

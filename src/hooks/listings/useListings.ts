@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { fetchListings } from '../../api/listingsClient';
 import { 
   SortOption, 
@@ -21,7 +21,7 @@ export const useListings = ({
 }: UseListingsOptions) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [totalResults, setTotalResults] = useState(0);
-  const [pageNumber, setPageNumber] = useState(0);
+  const pageNumberRef = useRef(1);
   const [sort, setSort] = useState<SortOption>(initialSort);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +35,7 @@ export const useListings = ({
 
       const request: ListingsRequest = {
         query,
-        pageNumber: reset ? 0 : pageNumber,
+        pageNumber: reset ? 1 : pageNumberRef.current,
         size: pageSize,
         sort,
         facets: Object.keys(selectedFacets).length > 0 ? selectedFacets : undefined,
@@ -48,8 +48,8 @@ export const useListings = ({
           reset ? response.products : [...prev, ...response.products]
         );
         setTotalResults(response.totalResults);
-        setPageNumber((prev) => (reset ? 1 : prev + 1));
-
+        pageNumberRef.current = reset ? 2 : pageNumberRef.current + 1;
+        
         if (response.facets) {
           setAvailableFacets(response.facets);
         }
@@ -59,12 +59,12 @@ export const useListings = ({
         setIsLoading(false);
       }
     },
-    [query, pageNumber, pageSize, sort, selectedFacets]
+    [query, pageSize, sort, selectedFacets]
   );
 
   const handleSortChange = (newSort: SortOption) => {
     setSort(newSort);
-    setPageNumber(0);
+    pageNumberRef.current = 1;
     loadListings(true);
   };
 
@@ -78,7 +78,10 @@ export const useListings = ({
       }
       return updated;
     });
-    setPageNumber(0);
+    pageNumberRef.current = 1;
+    setTimeout(() => {
+      loadListings(true);
+    }, 0);
   };
 
   const loadMore = () => {

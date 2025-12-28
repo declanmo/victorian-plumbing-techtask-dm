@@ -11,6 +11,7 @@ interface ListingsPageProps {
 const ListingsPage: React.FC<ListingsPageProps> = ({ query }) => {
   const {
     products,
+    totalResults,
     sort,
     setSort,
     loadMore,
@@ -63,10 +64,22 @@ const ListingsPage: React.FC<ListingsPageProps> = ({ query }) => {
             <button
               onClick={loadMore}
               disabled={isLoading}
-              className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+              className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50 hover:bg-blue-700 transition-colors"
             >
               {isLoading ? 'Loading...' : 'Load More'}
             </button>
+            <p className="text-gray-600 text-sm mt-2">
+              Viewing {products.length} of {totalResults} products
+            </p>
+          </div>
+        )}
+        
+        {/* Show viewing count even when no more products to load */}
+        {!hasMore && products.length > 0 && (
+          <div className="mt-6 text-center">
+            <p className="text-gray-600 text-sm">
+              Viewing all {totalResults} products
+            </p>
           </div>
         )}
       </section>
