@@ -15,8 +15,10 @@ import type {
     originalPrice?: number;
     imageUrl?: string;
     discountPercentage?: number;
-  }
-  
+  averageRating?: number;
+  reviewsCount?: number;
+}
+
 const mapApiProductToProduct = (product: ApiProduct): Product => {
   const price = Number(product.price.priceIncTax);
   const originalPrice = product.price.wasPrice ? Number(product.price.wasPrice) : undefined;
@@ -33,6 +35,8 @@ const mapApiProductToProduct = (product: ApiProduct): Product => {
     originalPrice,
     imageUrl: product.image?.url,
     discountPercentage,
+    averageRating: product.averageRating,
+    reviewsCount: product.reviewsCount,
   };
 };
   

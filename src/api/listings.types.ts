@@ -43,8 +43,8 @@ export interface ListingsRequest {
   /**
    * Raw product shape as returned by the API
    */
-  export interface ApiProduct {
-    id: string;
+export interface ApiProduct {
+  id: string;
   productName: string;
   price: {
     priceIncTax: number;
@@ -57,6 +57,8 @@ export interface ListingsRequest {
       imageAltText?: string;
     };
   };
+  averageRating?: number;
+  reviewsCount?: number;
 }
 
 export interface ApiFacetValue {
@@ -71,9 +73,6 @@ export interface ApiFacetValue {
  * Facet group structure from API
  */
 export interface ApiFacetGroup {
-  identifier: string;
-  displayName: string;
-  priority: number;
   options: ApiFacetValue[];
   facetType: number;
 }

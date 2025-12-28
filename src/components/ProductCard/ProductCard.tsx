@@ -41,6 +41,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.discountPercentage}% off
           </p>
         )}
+        
+        {/* Rating and Reviews */}
+        {product.averageRating !== undefined && (
+          <div className="flex items-center gap-1 mt-2">
+            <span className="text-yellow-500">
+              {'★'.repeat(Math.round(product.averageRating))}
+            </span>
+            <span className="text-sm font-medium">{product.averageRating.toFixed(1)}</span>
+            {product.reviewsCount !== undefined && product.reviewsCount > 0 && (
+              <span className="text-gray-500 text-sm">({product.reviewsCount})</span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Optional: Shortlist / Compare buttons can go here */}
