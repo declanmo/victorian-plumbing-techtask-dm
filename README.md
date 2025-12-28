@@ -1,6 +1,6 @@
 # E-Commerce Product Listing Page
 
-Built with **React + TypeScript**.
+Built with **React + TypeScript**. A preview of this project can be seen at [Cloudflare Pages](https://victorian-plumbing-techtask-dm.pages.dev/)
 
 ---
 
