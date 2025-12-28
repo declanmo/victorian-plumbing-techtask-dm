@@ -48,7 +48,8 @@ export interface ApiProduct {
   productName: string;
   price: {
     priceIncTax: number;
-    wasPrice?: number;
+    wasPriceIncTax?: number;
+    wasPriceExcTax?: number;
     isOnPromotion: boolean;
   };
   image?: {

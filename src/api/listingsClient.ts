@@ -17,11 +17,12 @@ import type {
     discountPercentage?: number;
   averageRating?: number;
   reviewsCount?: number;
+  isOnPromotion: boolean;
 }
 
 const mapApiProductToProduct = (product: ApiProduct): Product => {
   const price = Number(product.price.priceIncTax);
-  const originalPrice = product.price.wasPrice ? Number(product.price.wasPrice) : undefined;
+  const originalPrice = product.price.wasPriceIncTax ? Number(product.price.wasPriceIncTax) : undefined;
   
   // Calculate discount percentage if there's a wasPrice
   const discountPercentage = originalPrice && originalPrice > price
@@ -37,15 +38,16 @@ const mapApiProductToProduct = (product: ApiProduct): Product => {
     discountPercentage,
     averageRating: product.averageRating,
     reviewsCount: product.reviewsCount,
+    isOnPromotion: product.price.isOnPromotion,
   };
 };
-  
-  /**
-   * Fetch listings from the API
-   */
-  export const fetchListings = async (
-    payload: ListingsRequest
-  ): Promise<{
+
+/**
+ * Fetch listings from the API
+ */
+export const fetchListings = async (
+  payload: ListingsRequest
+): Promise<{
     products: Product[];
     totalResults: number;
     facets?: ListingsResponse['facets'];

@@ -9,7 +9,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <article className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-4 flex flex-col">
       {/* Product Image */}
-      <div className="w-full h-48 bg-gray-100 rounded mb-4 flex items-center justify-center overflow-hidden">
+      <div className="w-full h-48 bg-gray-100 rounded mb-4 flex items-center justify-center overflow-hidden relative">
         {product.imageUrl ? (
           <img
             src={product.imageUrl}
@@ -18,6 +18,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           />
         ) : (
           <span className="text-gray-400">No Image</span>
+        )}
+        {product.isOnPromotion && (
+          <div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+            SALE
+          </div>
         )}
       </div>
 
@@ -28,14 +33,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {/* Pricing */}
       <div className="mt-auto">
-        <p className="text-blue-600 font-bold">
-          £{product.price.toFixed(2)}
-        </p>
-        {product.originalPrice && product.originalPrice > product.price && (
-          <p className="text-gray-400 line-through text-sm">
-            £{product.originalPrice.toFixed(2)}
+        <div className="flex items-center gap-2">
+          <p className="text-blue-600 font-bold">
+            £{product.price.toFixed(2)}
           </p>
-        )}
+          {product.isOnPromotion && product.originalPrice && product.originalPrice > product.price && (
+            <p className="text-gray-400 line-through text-sm">
+              £{product.originalPrice.toFixed(2)}
+            </p>
+          )}
+        </div>
         {product.discountPercentage && (
           <p className="text-green-600 text-sm font-medium">
             {product.discountPercentage}% off
