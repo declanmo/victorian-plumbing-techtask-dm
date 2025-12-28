@@ -1,11 +1,23 @@
 import React from 'react';
 import type { Product } from '../../api/listingsClient';
+import { useComparison } from '../../hooks/useComparison';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { addProduct, removeProduct, isComparing, canAddMore } = useComparison();
+  const isInComparison = isComparing(product.id);
+
+  const handleCompareClick = () => {
+    if (isInComparison) {
+      removeProduct(product.id);
+    } else {
+      addProduct(product);
+    }
+  };
+
   return (
     <article className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-4 flex flex-col">
       {/* Product Image */}
@@ -63,7 +75,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
       </div>
 
-      {/* Optional: Shortlist / Compare buttons can go here */}
+      {/* Compare Button */}
+      <button
+        onClick={handleCompareClick}
+        disabled={!isInComparison && !canAddMore}
+        className={`mt-3 w-full py-2 rounded-lg font-medium transition-colors ${
+          isInComparison
+            ? 'bg-blue-600 text-white hover:bg-blue-700'
+            : canAddMore
+            ? 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+            : 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+        }`}
+      >
+        {isInComparison ? 'Remove from Compare' : 'Compare'}
+      </button>
     </article>
   );
 };
