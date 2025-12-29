@@ -31,7 +31,7 @@ export const useListings = ({
   const allFacetsRef = useRef<Record<string, ApiFacetGroup>>({});
 
   const loadListings = useCallback(
-    async (reset = false) => {
+    async (reset = false, sortOverride?: SortOption) => {
       setIsLoading(true);
       setError(null);
 
@@ -39,7 +39,7 @@ export const useListings = ({
         query,
         pageNumber: reset ? 1 : pageNumberRef.current,
         size: pageSize,
-        sort,
+        sort: sortOverride ?? sort,
         facets: Object.keys(selectedFacetsRef.current).length > 0 ? selectedFacetsRef.current : undefined,
       };
 
@@ -98,7 +98,7 @@ export const useListings = ({
   const handleSortChange = (newSort: SortOption) => {
     setSort(newSort);
     pageNumberRef.current = 1;
-    loadListings(true);
+    loadListings(true, newSort);
   };
 
   const handleFacetChange = (facetKey: string, facetValues: FacetFilterValue[]) => {
