@@ -49,7 +49,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   };
 
   return (
-    <aside className="w-64 bg-white p-4 rounded-lg shadow max-h-screen overflow-y-auto">
+    <aside className="w-64 bg-white p-4 rounded-lg shadow max-h-screen overflow-y-auto" aria-label="Product filters">
       <h2 className="text-xl font-bold mb-4">Filter By</h2>
 
       {availableFacets.map((facetGroup) => {
@@ -58,10 +58,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         }
 
         return (
-          <div key={facetGroup.identifier} className="mb-6">
-            <h3 className="font-semibold mb-3 text-gray-700">
+          <fieldset key={facetGroup.identifier} className="mb-6 border-0 p-0">
+            <legend className="font-semibold mb-3 text-gray-700">
               {facetGroup.displayName}
-            </h3>
+            </legend>
             
             <div className="flex flex-wrap gap-2">
               {facetGroup.options.map((option) => {
@@ -75,6 +75,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                     key={option.identifier}
                     onClick={() => handlePillClick(facetGroup.identifier, option.identifier, value)}
                     disabled={isDisabled}
+                    aria-pressed={selected}
+                    aria-label={`${displayValue}, ${option.productCount} products${selected ? ', selected' : ''}${isDisabled ? ', no products available' : ''}`}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                       selected
                         ? 'bg-blue-600 text-white hover:bg-blue-700'
@@ -83,17 +85,17 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    {displayValue}
+                    <span aria-hidden="true">{displayValue}</span>
                     <span className={`ml-1 text-xs ${
                       selected ? 'text-blue-200' : isDisabled ? 'text-gray-400' : 'text-gray-500'
-                    }`}>
+                    }`} aria-hidden="true">
                       ({option.productCount})
                     </span>
                   </button>
                 );
               })}
             </div>
-          </div>
+          </fieldset>
         );
       })}
 

@@ -128,7 +128,7 @@ With more time, I would add:
 
 Given more time, I would:
 
-- Made filters collapsible to reduce page size
+- Make filters collapsible to reduce page size
 - Add Storybook for design system components
 - Introduce Unit and E2E test coverage
 - Persist filters and sort state via URL

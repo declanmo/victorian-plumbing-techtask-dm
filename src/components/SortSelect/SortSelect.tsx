@@ -15,11 +15,13 @@ const sortOptions: { value: SortOption; label: string }[] = [
 
 const SortSelect: React.FC<SortSelectProps> = ({ value, onChange }) => {
   return (
-    <label className="flex items-center space-x-2">
-      <span className="text-sm font-medium">Sort by:</span>
+    <div className="flex items-center space-x-2">
+      <label htmlFor="sort-select" className="text-sm font-medium">Sort by:</label>
       <select
+        id="sort-select"
         value={value}
         onChange={(e) => onChange(Number(e.target.value) as SortOption)}
+        aria-label="Sort products by"
         className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         {sortOptions.map((option) => (
@@ -28,7 +30,7 @@ const SortSelect: React.FC<SortSelectProps> = ({ value, onChange }) => {
           </option>
         ))}
       </select>
-    </label>
+    </div>
   );
 };
 

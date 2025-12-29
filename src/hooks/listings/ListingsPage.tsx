@@ -37,15 +37,15 @@ const ListingsPage: React.FC<ListingsPageProps> = ({ query }) => {
       />
 
       {/* Main Content */}
-      <section className="flex-1">
+      <section className="flex-1" aria-label="Product listings">
         <div className="mb-4 flex justify-end">
           <SortSelect value={sort} onChange={setSort} />
         </div>
 
         {/* Error Handling */}
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        {error && <p className="text-red-500 mb-4" role="alert">{error}</p>}
 
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3" role="region" aria-label="Product results" aria-live="polite" aria-atomic="false">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -54,6 +54,8 @@ const ListingsPage: React.FC<ListingsPageProps> = ({ query }) => {
               <div
                 key={i}
                 className="h-64 bg-gray-200 animate-pulse rounded-lg"
+                role="status"
+                aria-label="Loading product"
               />
             ))}
         </div>
@@ -64,20 +66,20 @@ const ListingsPage: React.FC<ListingsPageProps> = ({ query }) => {
             <button
               onClick={loadMore}
               disabled={isLoading}
+              aria-label="Load more products"
               className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50 hover:bg-blue-700 transition-colors"
             >
               {isLoading ? 'Loading...' : 'Load More'}
             </button>
-            <p className="text-gray-600 text-sm mt-2">
+            <p className="text-gray-600 text-sm mt-2" role="status" aria-live="polite">
               Viewing {products.length} of {totalResults} products
             </p>
           </div>
         )}
         
-        {/* Show viewing count even when no more products to load */}
         {!hasMore && products.length > 0 && (
           <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-sm" role="status" aria-live="polite">
               Viewing all {totalResults} products
             </p>
           </div>
