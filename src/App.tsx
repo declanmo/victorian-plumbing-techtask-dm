@@ -6,8 +6,15 @@ import ComparisonPanel from './components/ComparisonPanel/ComparisonPanel'
 function App() {
   return (
     <ComparisonProvider>
-      <h1 className='text-3xl font-bold text-center my-6'>Victorian Plumbing Techtask</h1>
-      <ListingsPage query="toilets" />
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      <header>
+        <h1 className='text-3xl font-bold text-center my-6'>Victorian Plumbing Techtask</h1>
+      </header>
+      <main id="main-content">
+        <ListingsPage query="toilets" />
+      </main>
       <ComparisonPanel />
     </ComparisonProvider>
   )
