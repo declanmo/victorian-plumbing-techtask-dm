@@ -21,7 +21,7 @@ Built with **React + TypeScript**. A preview of this project can be seen at [Clo
 
 ## Overview
 
-This project is a **product listing page** built using **React and TypeScript**. It consumes the Victorian Plumbing public listings API to render a responsive grid of product cards, with support for sorting and pagination.
+This project is a **product listing page** built using **React and TypeScript**. It consumes the Victorian Plumbing public listings API to render a responsive grid of product cards, with support for sorting and pagination as well as an additional feature for comparing products.
 
 ---
 
@@ -31,7 +31,6 @@ This project is a **product listing page** built using **React and TypeScript**.
 - **TypeScript** – Strict typing throughout  
 - **Vite** – Fast development and build  
 - **Tailwind CSS** – Utility first styling  
-- **Fetch API** – Smart api interaction
 
 
 ---
@@ -42,8 +41,8 @@ The listings API is consumed via a **typed client abstraction**, rather than fet
 
 ### Key Considerations
 
-- Centralised handling of sort options and pagination  
-- Defensive handling of optional or missing fields  
+- Centralised handling of sort options and pagination
+- Defensive handling of optional or missing fields 
 
 ---
 
@@ -53,7 +52,6 @@ The listings API is consumed via a **typed client abstraction**, rather than fet
 - Responsive CSS Grid layout
 - Semantic HTML (`article`, `h2`, `button`)
 - Graceful fallbacks for missing images or prices
-- Skeleton loading state during fetch
 
 ### Sorting
 - “Sort by” control mapped directly to API options
@@ -66,7 +64,7 @@ The listings API is consumed via a **typed client abstraction**, rather than fet
 - Scroll position preserved between loads
 
 ### Bonus Feature: Shortlist
-- Users can save products for comparison
+- Users can save products for comparison between filters
 
 ---
 
@@ -87,10 +85,10 @@ The aim was to meet **WCAG AA principles** in a realistic, production-style cont
 
 Although this is a client-rendered example, several performance best practices were applied:
 
-- Memoisation of expensive renders
 - Lazy loading of images
 - Scoped state to reduce unnecessary re-renders
 - Avoidance of layout shift during loading
+- Accrual of facets to prevent delayed first paint
 
 
 ---
